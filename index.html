@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistem Informasi Game</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-image: url('BCK.jpg'); /* BCK */
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .login-container {
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            display: none;
+        }
+
+        .login-container input[type="text"],
+        .login-container input[type="password"] {
+            width: 80%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .login-container button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .login-container button:hover {
+            background-color: #45a049;
+        }
+
+        .container {
+            display: none; /* Sembunyikan container game sebelum login */
+            grid-template-columns: repeat(4, 100px);
+            grid-gap: 20px;
+        }
+
+        .box {
+            width: 100px;
+            height: 100px;
+            background-color: #4CAF50;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .box:hover {
+            background-color: #45a049;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: #fff;
+            padding: 40px;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 600px;
+            text-align: center;
+            transform: scale(0.9);
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .modal.show .modal-content {
+            transform: scale(1);
+        }
+
+        #questionText {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+<div class="login-container" id="loginContainer">
+    <h2>Login</h2>
+    <input type="text" id="username" placeholder="Username"><br>
+    <input type="password" id="password" placeholder="Kata Sandi"><br>
+    <button onclick="login()">Masuk</button>
+</div>
+
+<div class="container" id="gameContainer">
+    <!-- Membuat 16 kotak -->
+    <div class="box" onclick="showQuestion(1)">1</div>
+    <div class="box" onclick="showQuestion(2)">2</div>
+    <div class="box" onclick="showQuestion(3)">3</div>
+    <div class="box" onclick="showQuestion(4)">4</div>
+    <div class="box" onclick="showQuestion(5)">5</div>
+    <div class="box" onclick="showQuestion(6)">6</div>
+    <div class="box" onclick="showQuestion(7)">7</div>
+    <div class="box" onclick="showQuestion(8)">8</div>
+    <div class="box" onclick="showQuestion(9)">9</div>
+    <div class="box" onclick="showQuestion(10)">10</div>
+    <div class="box" onclick="showQuestion(11)">11</div>
+    <div class="box" onclick="showQuestion(12)">12</div>
+    <div class="box" onclick="showQuestion(13)">13</div>
+    <div class="box" onclick="showQuestion(14)">14</div>
+    <div class="box" onclick="showQuestion(15)">15</div>
+    <div class="box" onclick="showQuestion(16)">16</div>
+</div>
+
+<!-- Modal untuk pertanyaan -->
+<div id="questionModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <p id="questionText"></p>
+    </div>
+</div>
+
+<script>
+    // Daftar pertanyaan sesuai dengan nomor kotak
+    const questions = [
+        "Apa makna merah di dalam bendera Indonesia?",
+        "Berapa stansa lagu Indonesia Raya?",
+        "Kapan Jepang datang ke Indonesia?",
+        "Siapa nama presiden yang menyambut Ir. Soekarno ketika berkunjung ke Uni Soviet?",
+        "Kapan teks proklamasi dibuat?",
+        "Siapa yang meminjamkan mesin tulis untuk menulis proklamasi?",
+        "Tanggal berapa BPUPKI dilaksanakan pertama kali?",
+        "Tanggal berapa BPUPKI dilaksanakan pertama kali?",
+        "Tanggal berapa BPUPKI dilaksanakan pertama kali?",
+        "Tanggal berapa BPUPKI dilaksanakan pertama kali?",
+        "Tanggal berapa BPUPKI dilaksanakan pertama kali?",
+        "Tanggal berapa BPUPKI dilaksanakan pertama kali?",
+        "Tanggal berapa BPUPKI dilaksanakan pertama kali?",
+        "Tanggal berapa BPUPKI dilaksanakan pertama kali?",
+        "Tanggal berapa BPUPKI dilaksanakan pertama kali?",
+        "Tanggal berapa BPUPKI dilaksanakan pertama kali?"
+    ];
+
+    // Fungsi untuk menampilkan pertanyaan
+    function showQuestion(boxNumber) {
+        document.getElementById("questionText").textContent = questions[boxNumber - 1];
+        const modal = document.getElementById("questionModal");
+        modal.style.display = "flex";
+        setTimeout(() => {
+            modal.classList.add('show');
+        }, 100); // Animasi pembesaran
+    }
+
+    // Fungsi untuk menutup modal
+    function closeModal() {
+        const modal = document.getElementById("questionModal");
+        modal.classList.remove('show');
+        setTimeout(() => {
+            modal.style.display = "none";
+        }, 300); // Waktu sinkron dengan animasi
+    }
+
+    // Menutup modal ketika user mengklik di luar modal
+    window.onclick = function(event) {
+        const modal = document.getElementById("questionModal");
+        if (event.target == modal) {
+            closeModal();
+        }
+    }
+
+    // Fungsi login
+    function login() {
+        const username = document.getElementById('username').value;
+        const password = document.getElementById('password').value;
+
+        if (username === "HutRI79" && password === "operatorlomba") {
+            document.getElementById('loginContainer').style.display = 'none';
+            document.getElementById('gameContainer').style.display = 'grid';
+        } else {
+            alert("Username atau kata sandi salah.");
+        }
+    }
+
+    // Tampilkan login terlebih dahulu
+    document.getElementById('loginContainer').style.display = 'block';
+</script>
+
+</body>
+</html>
