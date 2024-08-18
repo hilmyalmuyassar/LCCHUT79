@@ -161,6 +161,9 @@
     </div>
 </div>
 
+<!-- Audio player -->
+<audio id="backSound" src="Sfx.mp3"></audio>
+
 <script>
     // Daftar pertanyaan sesuai dengan nomor kotak
     const questions = [
@@ -182,7 +185,7 @@
         "Siapakah tokoh dibalik kejadian G30S/PKI?"
     ];
 
-    // Fungsi untuk menampilkan pertanyaan
+    // Fungsi untuk menampilkan pertanyaan dan memutar backsound
     function showQuestion(boxNumber) {
         document.getElementById("questionText").textContent = questions[boxNumber - 1];
         const modal = document.getElementById("questionModal");
@@ -190,6 +193,10 @@
         setTimeout(() => {
             modal.classList.add('show');
         }, 100); // Animasi pembesaran
+
+        // Memutar backsound
+        const backSound = document.getElementById("backSound");
+        backSound.play();
     }
 
     // Fungsi untuk menutup modal
